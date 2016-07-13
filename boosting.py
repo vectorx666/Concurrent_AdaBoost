@@ -21,23 +21,6 @@ def load_csv(filename, cols, sep = ',', skip = 0):
     from numpy import loadtxt
     data = loadtxt(filename, delimiter = sep, usecols = cols, skiprows = skip)
     return data
-
-def cargartweets(archivo):
-	print "Archivo Cargado"
-	datos=[]
-	with open(archivo,'r') as arch:
-		for linea in arch:
-			largo=len(linea)
-			linea=linea[1:largo-1]
-			lista=linea.strip().replace("[","").replace("]","").replace(" ","").split(",")
-			temp=lista[len(lista)-1]
-			lista.pop()
-			lista.pop()
-			lista.pop()
-			lista.append(temp)
-			lista2=map(float,lista)
-			datos.append(lista2)
-	return array(datos)
     
 def cargardataset(nombrearchivo):
 
@@ -246,10 +229,6 @@ def main(argv):
 					
 					datos=numpy.concatenate((x,y),axis=1)
 					datos=array(datos)
-				if argv[2]=='twitter':
-					#datos=readcsv('diabetes_scale.txt')
-					datos=cargartweets("clasificadostwitter.txt")	
-					print "Tamano Twitter: ", len(datos)
 				if argv[2]=='mushrooms':
 					#datos=readcsv('diabetes_scale.txt')
 					x,y=load_svmlight_file('mushrooms')
