@@ -11,12 +11,30 @@ def generate_plot(measure, files, threads, model, percentage, experiment, server
         dfs.append(pd.read_csv(file))
         if accu_df is None:
             accu_df = pd.concat([dfs[-1]['round']], axis = 1)
-        accu_df['accu_'+str(threads[idx])] = dfs[-1][measure]
+        accu_df[str(threads[idx]) + ' threads'] = dfs[-1][measure]
+    potencial_markers = ['o', 's', 'v', 'p', '*', 'x']
+    markers = []
+    for idx, val in enumerate(threads):
+        markers.append(potencial_markers[idx])
     #print accu_df
     plt.figure()
     accu_df.plot(x='round')
     #plt.show()
     plt.savefig(server + "_" + experiment + "_" + model + "/" + experiment+"_"+model+"_"+percentage+"_"+measure+'.png')
+    plt.close()
+
+    plt.figure()
+    accu_df.ix[:, accu_df.columns != 'round'] = accu_df.ix[:, accu_df.columns != 'round'].apply(lambda col: (1-col).cummin(), axis=0)
+    axes = []
+    for idx,column in enumerate(accu_df.ix[:, accu_df.columns != 'round']):
+        ax = accu_df[column].plot(x='round', linestyle='-', marker=markers[idx])
+        ax.set_ylabel('error')
+        ax.set_xlabel('round')
+        lines, labels = ax.get_legend_handles_labels()
+        axes.append(labels[-1])
+    plt.legend(axes)
+    #plt.show()
+    plt.savefig(server + "_" + experiment + "_" + model + "/" + experiment+"_"+model+"_"+percentage+"_"+measure+'_ERROR_MIN.png')
     plt.close()
 
 if __name__ == "__main__":
